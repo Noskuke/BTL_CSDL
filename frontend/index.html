@@ -752,6 +752,82 @@ html body #dn-the .dn-goi{color:#52616c!important;-webkit-text-fill-color:#52616
 html body #dn-the .dn-o input::placeholder{color:#71808c!important;-webkit-text-fill-color:#71808c!important}
 html body #dn-the .dn-mat{color:#35566c!important}
 html body #dn-the .dn-loi{color:#9a4545!important;-webkit-text-fill-color:#9a4545!important}
+/* Keep report headings and controls readable outside white cards too. */
+html body .tab-content .wibu-text,
+html body .tab-content>div:not(.glass-card) h2,
+html body .tab-content>div:not(.glass-card) label{
+  color:#28485d!important;-webkit-text-fill-color:#28485d!important;
+  background:none!important;-webkit-background-clip:border-box!important;
+  filter:none!important;text-shadow:none!important;
+}
+html body .tab-content .text-gray-500,html body .tab-content .text-gray-600,
+html body .tab-content .text-gray-700,html body .tab-content .text-gray-400{
+  color:#52616c!important;-webkit-text-fill-color:#52616c!important;
+}
+html body .tab-content .text-red-700,html body .tab-content .text-red-800,
+html body .tab-content .text-red-600{
+  color:#873f46!important;-webkit-text-fill-color:#873f46!important;
+}
+html body .tab-content .text-xs{font-size:13px!important}
+html body .tab-content .vip-honors-title{
+  color:#28485d!important;font-size:15px!important;font-weight:700!important;
+  letter-spacing:normal!important;border-bottom:1px solid #dce3e8!important;padding-bottom:10px!important;
+}
+html body .tab-content .vip-honor{
+  color:#263442!important;background:#fff!important;border:1px solid #dce3e8!important;
+  border-radius:10px!important;box-shadow:0 2px 6px rgba(25,42,55,.06)!important;
+}
+html body .tab-content .vip-honor .vh-name,
+html body .tab-content .vip-honor .vh-total{
+  color:#263442!important;-webkit-text-fill-color:#263442!important;font-size:15px!important;
+}
+html body .tab-content .vip-honor .vh-rank{font-size:12px!important;font-weight:700!important}
+html body .tab-content .vip-honor.gold .vh-rank{color:#755600!important}
+html body .tab-content .vip-honor.silver .vh-rank{color:#4b5563!important}
+html body .tab-content .vip-honor.bronze .vh-rank{color:#8b4b22!important}
+html body .tab-content .vip-honor .vh-avatar{
+  color:#28485d!important;background:#f3f6f7!important;box-shadow:none!important;
+}
+html body #vip-honors .vip-honor-empty{color:#52616c!important;border-color:#cbd6dd!important}
+html body #room-grid>div{
+  min-height:112px!important;border-radius:10px!important;border-width:1px!important;
+  box-shadow:0 2px 6px rgba(25,42,55,.06)!important;transition:none!important;
+  color:#263442!important;
+}
+html body #room-grid>div.bg-red-100{
+  background:#fff3f1!important;border-color:#e2aaa5!important;color:#74383d!important;
+}
+html body #room-grid>div.bg-amber-100{
+  background:#fff8e7!important;border-color:#e3cb91!important;color:#66521f!important;
+}
+html body #room-grid>div.bg-emerald-50{
+  background:#edf7f1!important;border-color:#a6cdb5!important;color:#285d45!important;
+}
+html body #room-grid>div.bg-red-100,html body #room-grid>div.bg-amber-100,
+html body #room-grid>div.bg-emerald-50{
+  box-shadow:0 2px 6px rgba(25,42,55,.06)!important;
+}
+html body #room-grid>div.bg-red-100:hover,html body #room-grid>div.bg-amber-100:hover,
+html body #room-grid>div.bg-emerald-50:hover{transform:none!important}
+html body #room-grid>div .text-red-700{
+  color:#28485d!important;-webkit-text-fill-color:#28485d!important;text-shadow:none!important;
+}
+html body #room-grid>div [class*="bg-white"]{
+  background:#fff!important;border:1px solid #cbd6dd!important;
+  color:#33424d!important;-webkit-text-fill-color:#33424d!important;
+  font-size:12px!important;font-weight:700!important;white-space:nowrap!important;
+}
+html body #room-grid>div .text-xs{
+  color:#52616c!important;-webkit-text-fill-color:#52616c!important;
+  font-size:14px!important;font-style:normal!important;font-weight:500!important;
+}
+html body #room-loc{font-size:13px!important}
+html body #room-loc>*{font-size:13px!important}
+html body .hm-kl,html body .hm-bio-box>small{
+  color:#52616c!important;-webkit-text-fill-color:#52616c!important;
+  font-size:13px!important;font-weight:700!important;letter-spacing:normal!important;
+}
+html body .hm-ks{color:#52616c!important;-webkit-text-fill-color:#52616c!important;font-size:14px!important}
 @media(prefers-reduced-motion:reduce){html body *,html body *::before,html body *::after{animation:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
