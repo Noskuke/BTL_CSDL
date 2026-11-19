@@ -20,6 +20,12 @@ public class LoaiPhong {
     @Column(name = "DonGia", nullable = false)
     private BigDecimal donGia;
 
+    @Column(name = "MoTaChatLuong")
+    private String moTaChatLuong;
+
+    @Column(name = "ThietKe")
+    private String thietKe;
+
     public Integer getMaLoaiPhong() { return maLoaiPhong; }
     public void setMaLoaiPhong(Integer maLoaiPhong) { this.maLoaiPhong = maLoaiPhong; }
     public String getTenLoaiPhong() { return tenLoaiPhong; }
@@ -28,4 +34,8 @@ public class LoaiPhong {
     public void setSoLuong(Integer soLuong) { this.soLuong = soLuong; }
     public BigDecimal getDonGia() { return donGia; }
     public void setDonGia(BigDecimal donGia) { this.donGia = donGia; }
+    public String getMoTaChatLuong() { return moTaChatLuong; }
+    public void setMoTaChatLuong(String moTaChatLuong) { this.moTaChatLuong = moTaChatLuong; }
+    public String getThietKe() { return thietKe; }
+    public void setThietKe(String thietKe) { this.thietKe = thietKe; }
 }

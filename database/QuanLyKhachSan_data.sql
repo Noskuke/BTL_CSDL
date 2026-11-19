@@ -8062,11 +8062,11 @@ INSERT INTO `KhachHang` (`MaKhachHang`, `CCCD`, `HoTen`, `SoDienThoai`) VALUES
 (7998, '034095007998', 'Hoàng Mai Dung', '0980007998'),
 (7999, '034095007999', 'Trần Đức Quân', '0980007999'),
 (8000, '034095008000', 'Vũ Minh Khang', '0980008000');
-INSERT INTO `LoaiPhong` (`MaLoaiPhong`, `TenLoaiPhong`, `SoLuong`, `DonGia`) VALUES
-(1, 'Standard Single', 20, 500000),
-(2, 'Standard Double', 15, 800000),
-(3, 'Deluxe Suite', 10, 1500000),
-(4, 'President VIP', 5, 3500000);
+INSERT INTO `LoaiPhong` (`MaLoaiPhong`, `TenLoaiPhong`, `SoLuong`, `DonGia`, `MoTaChatLuong`, `ThietKe`) VALUES
+(1, 'Standard Single', 20, 500000, 'Phòng tiêu chuẩn cho một khách, tiện nghi cơ bản, sạch sẽ và đầy đủ nhu cầu nghỉ ngắn ngày.', 'Thiết kế tối giản, ấm cúng, gồm một giường đơn và không gian làm việc nhỏ.'),
+(2, 'Standard Double', 15, 800000, 'Phòng tiêu chuẩn cho hai khách, không gian rộng hơn và tiện nghi cân bằng.', 'Thiết kế hiện đại, gồm một giường đôi, tủ quần áo và khu vực sinh hoạt thoải mái.'),
+(3, 'Deluxe Suite', 10, 1500000, 'Phòng cao cấp nhiều không gian, nội thất tiện nghi và phù hợp cho kỳ nghỉ dài ngày.', 'Thiết kế sang trọng, có khu vực phòng khách riêng, ánh sáng ấm và nội thất cao cấp.'),
+(4, 'President VIP', 5, 3500000, 'Phòng hạng tổng thống, chất lượng cao cấp, riêng tư và đầy đủ tiện nghi đặc biệt.', 'Thiết kế đẳng cấp, diện tích lớn, phòng khách riêng, nội thất cao cấp và tầm nhìn đẹp.');
 INSERT INTO `Phong` (`MaPhong`, `SoPhong`, `MaLoaiPhong`, `TrangThai`) VALUES
 (1, 'P001', 1, 'DANGSUDUNG'),
 (2, 'P002', 1, 'DANGSUDUNG'),

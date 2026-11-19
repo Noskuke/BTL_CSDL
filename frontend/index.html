@@ -524,6 +524,21 @@ html body #site-header h1+div{background:linear-gradient(90deg,#6a5cff,#ff5fb7,#
 html body button.wibu-bg,html body .hm-btn,html body #vip-pager button:not(:disabled){background:var(--gal-grad)!important;box-shadow:0 6px 18px var(--gal-glow)!important}
 html body button.wibu-bg:hover,html body .hm-btn:hover,html body #vip-pager button:not(:disabled):hover{box-shadow:0 10px 26px rgba(255,95,183,.5)!important;filter:brightness(1.1)!important}
 html body button.wibu-bg:active,html body .hm-btn:active{box-shadow:0 3px 10px var(--gal-glow)!important}
+/* Phân trang hòa với nền sáng phía sau */
+html body #vip-pager button:not(:disabled){
+  background:rgba(255,255,255,.58)!important;
+  color:#3b356b!important;
+  border:1px solid rgba(87,76,150,.35)!important;
+  box-shadow:0 5px 14px rgba(55,48,110,.18)!important;
+  backdrop-filter:blur(8px);
+}
+html body #vip-pager button:not(:disabled):hover{
+  background:rgba(124,77,255,.16)!important;
+  color:#292354!important;
+  border-color:rgba(87,76,150,.6)!important;
+  box-shadow:0 8px 18px rgba(55,48,110,.25)!important;
+  filter:none!important;
+}
 html body #vip-pager button:disabled{background:rgba(255,255,255,.1)!important;color:#9d98c8!important}
 /* nút phụ ngoài khung */
 html body button[onclick^="thuGonTatCa"],html body button[class*="border-red-300"]{background:rgba(255,255,255,.07)!important;color:#e9deff!important;border:1.5px solid rgba(180,140,255,.75)!important}
@@ -945,7 +960,7 @@ html body .hm-ks{color:#52616c!important;-webkit-text-fill-color:#52616c!importa
       <div class="hm-ks" id="k-trong-s">Sẵn sàng đón khách</div>
     </div>
     <div class="hm-card hm-kpi hm-rise" style="--d:3">
-      <div class="hm-kl">Khách VIP</div>
+      <div class="hm-kl">Khách hàng thân thiết</div>
       <div class="hm-kv" id="k-vip">-</div>
       <div class="hm-ks">Thượng đế</div>
     </div>
@@ -994,9 +1009,26 @@ html body .hm-ks{color:#52616c!important;-webkit-text-fill-color:#52616c!importa
 <div class="wibu-border rounded-lg glass-card p-4"><h3 class="font-bold text-red-700 mb-3">Dịch Vụ Đang Dùng</h3><table class="w-full text-left text-sm"><thead><tr class="bg-red-50 text-red-800"><th class="p-2">Dịch vụ</th><th class="p-2 text-right">SL</th><th class="p-2 text-right">Tổng</th></tr></thead><tbody id="tbl-dv-dang-dung"></tbody></table></div>
 </div></div></section>
 
+<section id="tab-bookings" class="tab-content hidden">
+<div class="glass-card p-4 rounded-lg wibu-border mb-6">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+    <div><h2 class="text-xl font-bold wibu-text">Đặt phòng</h2></div>
+    <div class="flex flex-wrap items-center gap-2"><label for="booking-customer-search-type" class="text-xs text-red-700 font-bold">Tìm khách theo</label><select id="booking-customer-search-type" onchange="updateBookingCustomerPlaceholder()" class="bg-white border border-red-300 rounded-md px-2 py-1.5 text-xs text-red-800"><option value="id">Mã KH</option><option value="name">Tên</option><option value="cccd">CCCD</option><option value="phone">Số điện thoại</option></select><input id="booking-customer-search" type="text" onkeydown="if(event.key==='Enter'){event.preventDefault();searchBookingCustomer()}" placeholder="Nhập mã khách hàng" class="bg-white border border-red-300 rounded-md px-3 py-1.5 text-xs text-red-800 w-44"><button type="button" onclick="searchBookingCustomer()" class="wibu-bg font-bold px-3 py-1.5 rounded-md text-xs">Chọn khách</button><label for="booking-customer-id" class="text-xs text-red-700 font-bold">Mã KH đã chọn</label><input id="booking-customer-id" type="number" min="1" value="1" class="bg-white border border-red-300 rounded-md px-3 py-1.5 text-xs text-red-800 w-24"><label for="booking-status-filter" class="text-xs text-red-700 font-bold">Xem</label><select id="booking-status-filter" onchange="loadBookings()" class="bg-white border border-red-300 rounded-md px-2 py-1.5 text-xs text-red-800"><option value="ALL">Tất cả lịch</option><option value="DADAT">Phòng đặt trước</option><option value="DANGO">Đã ở</option><option value="DATRA">Đã trả</option><option value="HUY">Đã hủy</option></select><button onclick="loadBookings()" class="wibu-bg font-bold px-3 py-1.5 rounded-md text-xs">Tải lịch đặt</button></div>
+  </div>
+  <form id="booking-form" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end" onsubmit="saveBooking(event)">
+    <label class="text-xs text-red-700 font-bold">Phòng<select id="booking-room" required class="mt-1 w-full bg-white border border-red-300 rounded-md px-2 py-2 text-xs text-red-800"></select></label>
+    <label class="text-xs text-red-700 font-bold">Ngày nhận phòng<input id="booking-checkin" type="datetime-local" required class="mt-1 w-full bg-white border border-red-300 rounded-md px-2 py-2 text-xs text-red-800"></label>
+    <label class="text-xs text-red-700 font-bold">Ngày trả dự kiến<input id="booking-checkout" type="datetime-local" required class="mt-1 w-full bg-white border border-red-300 rounded-md px-2 py-2 text-xs text-red-800"></label>
+    <div class="flex gap-2"><button id="booking-submit" type="submit" class="wibu-bg font-bold px-4 py-2 rounded-md text-xs">Đặt phòng</button><button id="booking-cancel-edit" type="button" onclick="resetBookingForm()" class="hidden border border-gray-300 text-gray-700 font-bold px-3 py-2 rounded-md text-xs">Bỏ sửa</button></div>
+  </form>
+  <p class="text-xs text-gray-500 mt-3">Có thể đổi phòng/thời gian khi còn ít nhất 7 ngày trước ngày nhận phòng. Hủy đặt phòng sẽ giữ lại lịch sử với trạng thái HUY.</p>
+</div>
+<div class="tw wibu-border rounded-lg glass-card"><table class="w-full text-left text-sm"><thead><tr class="bg-red-50 text-red-800"><th class="p-3">Mã đặt</th><th class="p-3">Phòng</th><th class="p-3">Khách hàng</th><th class="p-3">Nhận phòng</th><th class="p-3">Trả dự kiến</th><th class="p-3">Trạng thái</th><th class="p-3 text-right sticky right-0 bg-red-50">Thao tác</th></tr></thead><tbody id="booking-table-body"></tbody></table></div>
+</section>
+
 <section id="tab-vip" class="tab-content hidden">
-<div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold wibu-text">Khách VIP</h2><div class="flex items-center gap-2"><input id="search-vip" onkeyup="filterVipTable()" placeholder="Tìm theo mã KH hoặc tên..." class="bg-white border border-red-300 rounded-md px-3 py-1 text-xs text-red-800"></div></div>
-<div class="glass-card wibu-border rounded-xl p-4 mb-5"><div class="vip-honors-title"><span>✦</span><span>BẢNG VINH DANH KHÁCH VIP CỦA VIP</span></div><div id="vip-honors" class="vip-honors"></div></div>
+<div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold wibu-text">Khách hàng thân thiết</h2><div class="flex items-center gap-2"><input id="search-vip" onkeyup="filterVipTable()" placeholder="Tìm theo mã KH hoặc tên..." class="bg-white border border-red-300 rounded-md px-3 py-1 text-xs text-red-800"></div></div>
+<div class="glass-card wibu-border rounded-xl p-4 mb-5"><div class="vip-honors-title"><span>✦</span><span>BẢNG KHÁCH VIP</span></div><div id="vip-honors" class="vip-honors"></div></div>
 <div class="tw wibu-border rounded-lg glass-card"><table class="w-full text-left text-sm"><thead><tr class="bg-red-50 text-red-800"><th class="p-3">Mã KH</th><th class="p-3">Tên</th><th class="p-3">Số lần thuê</th><th class="p-3">Tổng chi tiêu</th><th class="p-3">Phòng ưa thích</th><th class="p-3">Dịch vụ ưa thích</th></tr></thead><tbody id="vip-table-body"></tbody></table></div>
 <div id="vip-pager" class="flex justify-center items-center gap-3 mt-3 text-xs text-gray-700"></div></section>
 
@@ -1004,12 +1036,20 @@ html body .hm-ks{color:#52616c!important;-webkit-text-fill-color:#52616c!importa
 <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4"><h2 class="text-xl font-bold wibu-text">Sơ Đồ Phòng</h2>
 <div class="flex items-center gap-2 text-xs"><label class="text-red-700">Thời điểm:</label><input type="datetime-local" id="room-time" class="bg-white border border-red-300 text-red-800 rounded-md px-2 py-1"><button onclick="loadRoomStatusAtTime()" class="wibu-bg font-bold px-3 py-1 rounded-md">Kiểm Tra</button></div></div>
 <div id="room-loc" class="flex flex-wrap items-center gap-2 mb-4 text-xs"></div>
-<div id="room-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4"></div></section>
+<div id="room-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4"></div>
+<div id="room-booking-modal" class="hidden fixed inset-0 z-[100] bg-black/50 p-4 items-center justify-center">
+  <div class="w-full max-w-lg rounded-xl bg-white shadow-2xl p-5">
+    <div class="flex items-center justify-between mb-4"><h3 id="room-booking-modal-title" class="text-lg font-bold text-red-800">Thông tin phòng</h3><button type="button" onclick="closeRoomBookingModal()" class="text-2xl font-bold text-gray-500 hover:text-red-700">×</button></div>
+    <div id="room-booking-modal-body" class="space-y-3"></div>
+  </div>
+</div></section>
 
 <section id="tab-salary" class="tab-content hidden">
 <div class="flex flex-wrap justify-between items-center mb-4 gap-2"><h2 class="text-xl font-bold wibu-text">Bảng Lương Nhân Viên</h2>
-<div class="flex items-center gap-3"><input type="month" id="salary-month" onchange="loadSalary()" class="bg-white border border-red-300 text-red-800 rounded-md px-2 py-1 text-xs"><input type="number" id="search-emp-id" placeholder="Mã NV..." class="bg-white border border-red-300 rounded-md px-3 py-1 text-xs text-red-800 w-24"><button onclick="searchSalaryById()" class="wibu-bg font-bold px-3 py-1 rounded-md text-xs">Tìm NV</button></div></div>
-<div class="tw wibu-border rounded-lg glass-card"><table class="w-full text-left text-sm"><thead><tr class="bg-red-50 text-red-800"><th class="p-3">Mã NV</th><th class="p-3">Tên</th><th class="p-3">Chức vụ</th><th class="p-3">Lương CB</th><th class="p-3">Nhận/Trả (+100k)</th><th class="p-3">Hỗ trợ (+200k)</th><th class="p-3">Thực nhận</th></tr></thead><tbody id="salary-table-body"></tbody></table></div></section>
+<div class="flex items-center gap-3"><input type="month" id="salary-month" onchange="loadSalary()" class="bg-white border border-red-300 text-red-800 rounded-md px-2 py-1 text-xs"><label class="text-xs text-red-700 font-bold">Tính đến</label><input type="date" id="salary-until" onchange="loadSalary()" class="bg-white border border-red-300 text-red-800 rounded-md px-2 py-1 text-xs"><input type="number" id="search-emp-id" placeholder="Mã NV..." class="bg-white border border-red-300 rounded-md px-3 py-1 text-xs text-red-800 w-24"><button onclick="searchSalaryById()" class="wibu-bg font-bold px-3 py-1 rounded-md text-xs">Tìm NV</button></div></div>
+<div class="tw wibu-border rounded-lg glass-card"><table class="w-full text-left text-sm"><thead><tr class="bg-red-50 text-red-800"><th class="p-3">Mã NV</th><th class="p-3">Tên</th><th class="p-3">Chức vụ</th><th class="p-3">Lương CB</th><th class="p-3">Nhận/Trả (+100k)</th><th class="p-3">Hỗ trợ (+200k)</th><th class="p-3">Tạm tính</th><th class="p-3">Thực nhận</th></tr></thead><tbody id="salary-table-body"></tbody></table></div>
+<div id="employee-info-modal" class="hidden fixed inset-0 z-[100] bg-black/50 p-4 items-center justify-center"><div class="w-full max-w-lg rounded-xl bg-white shadow-2xl p-5"><div class="flex items-center justify-between mb-4"><h3 class="text-lg font-bold text-red-800">Thông tin nhân viên</h3><button type="button" onclick="closeEmployeeInfo()" class="text-2xl font-bold text-gray-500 hover:text-red-700">×</button></div><div id="employee-info-body" class="space-y-2 text-sm"></div></div></div>
+</section>
 
 <section id="tab-revenue" class="tab-content hidden">
 <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 glass-card p-4 rounded-lg wibu-border"><h2 class="text-lg font-bold wibu-text">Doanh Thu</h2>
@@ -1053,6 +1093,7 @@ const nowLocal=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezone
 const getJSON=u=>fetch(u).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()});
 const arr=a=>Array.isArray(a)?a:[];
 document.getElementById('salary-month').value=nowLocal().slice(0,7);
+document.getElementById('salary-until').value=nowLocal().slice(0,10);
 let currentLoadedMaKh = 1;
 let _dem=0;
 const _fetch=window.fetch.bind(window);
@@ -1063,9 +1104,12 @@ function thanhTai(bat){
   b.style.width=bat?'70%':'100%';
   if(!bat)setTimeout(()=>{b.style.width='0'},400);
 }
-function hienLoi(nd){
+function hienLoi(nd,thanhCong=false){
+  const box=document.getElementById('bao-loi');
   document.getElementById('bao-loi-nd').textContent=''+nd;
-  document.getElementById('bao-loi').classList.remove('hidden');
+  box.classList.remove('bg-red-100','border-red-400','text-red-800','bg-green-100','border-green-400','text-green-800');
+  box.classList.add(...(thanhCong?['bg-green-100','border-green-400','text-green-800']:['bg-red-100','border-red-400','text-red-800']));
+  box.classList.remove('hidden');
   clearTimeout(window._tLoi);
   window._tLoi=setTimeout(()=>document.getElementById('bao-loi').classList.add('hidden'),8000);
 }
@@ -1090,7 +1134,7 @@ function taiTongQuan(){
     document.getElementById('the-tong-quan').innerHTML=
       the('','Phòng đang sử dụng',`${dang}/${ph.length}`,'tại thời điểm hiện tại')+
       the('','Phòng đang trống',trong,'sẵn sàng đón khách')+
-      the('','Khách VIP',vip.filter(laVip).length,'theo điều kiện thân thiết')+
+      the('','Khách hàng thân thiết',vip.filter(laVip).length,'theo điều kiện thân thiết')+
       the('','Doanh thu tháng '+th,money(dtThang),'phòng + dịch vụ');
   }).catch(()=>{});
 }
@@ -1104,7 +1148,7 @@ function veCotThang(id,d){
   }).join('')+'</div><div class="flex gap-4 text-xs mt-2 text-gray-700"><span><i class="inline-block w-3 h-3 rounded-sm mr-1" style="background:#c62828"></i>Tiền phòng</span><span><i class="inline-block w-3 h-3 rounded-sm mr-1" style="background:#f9a825"></i>Tiền dịch vụ</span></div>';
 }
 
-const TABS = [['customer-lookup','Tra Cứu Khách Hàng'],['vip','Khách VIP'],['room-status','Sơ Đồ Phòng'],['salary','Lương Nhân Viên'],['revenue','Doanh Thu'],['frequency','Tần Suất Sử Dụng']];
+const TABS = [['customer-lookup','Tra Cứu Khách Hàng'],['bookings','Đặt Phòng'],['vip','Khách hàng thân thiết'],['room-status','Sơ Đồ Phòng'],['salary','Lương Nhân Viên'],['revenue','Doanh Thu'],['frequency','Tần Suất Sử Dụng']];
 document.getElementById('nav').innerHTML = TABS.map((t,i)=>`<button onclick="switchTab('${t[0]}')" id="btn-${t[0]}" class="tab-btn ${i?'':'active'} px-4 py-2 rounded-md border border-red-300 text-red-800 hover:border-red-500 transition-all text-sm font-bold">${t[1]}</button>`).join('');
 
 function switchTab(tabName){
@@ -1113,6 +1157,7 @@ function switchTab(tabName){
   document.getElementById(`tab-${tabName}`).classList.remove('hidden');
   document.getElementById(`btn-${tabName}`).classList.add('active');
   if(tabName==='customer-lookup')loadCustomerFullProfile(currentLoadedMaKh);
+  if(tabName==='bookings')loadBookingData();
   if(tabName==='vip')loadVIP();
   if(tabName==='room-status')loadRoomStatusAtTime();
   if(tabName==='salary')loadSalary();
@@ -1129,6 +1174,10 @@ function searchCustomerProfileDynamic(){
 const gr=(o,k)=>o[k]??o[k[0].toLowerCase()+k.slice(1)];
 const g=(o,k)=>{const v=gr(o,k);return typeof v==='string'?esc(v):v};
 const money=v=>Number(v||0).toLocaleString('vi-VN')+' đ';
+const moneyNghin=v=>money(Math.round(Number(v||0)/1000)*1000);
+const trangThaiHienThi={DADAT:'Đặt trước',DANGO:'Đã ở',DATRA:'Đã trả',HUY:'Đã hủy'};
+const trangThaiMau={DADAT:'bg-amber-100 text-amber-800 border-amber-300',DANGO:'bg-red-100 text-red-800 border-red-300',DATRA:'bg-emerald-100 text-emerald-800 border-emerald-300',HUY:'bg-gray-100 text-gray-600 border-gray-300'};
+const badgeTrangThai=v=>{const s=String(v||'');return `<span class="px-2 py-0.5 rounded-full text-xs border ${trangThaiMau[s]||'bg-gray-100 text-gray-600 border-gray-300'}">${esc(trangThaiHienThi[s]||s)}</span>`;};
 const empty=(n,t)=>`<tr><td colspan="${n}" class="p-4 text-center text-gray-400">${t}</td></tr>`;
 function hienThiThe(maKh,ten){
   document.getElementById('cust-card').innerHTML=avatar(maKh,72,ten||'K')+`<div><div class="text-xl font-extrabold wibu-text">${esc(ten||'Khách #'+maKh)}</div><div class="text-xs text-gray-600">Mã KH #${maKh}</div></div>`;
@@ -1145,11 +1194,113 @@ function loadCustomerFullProfile(maKh){
       const k=arr(l).find(x=>x.maKhachHang==maKh);
       if(k&&currentLoadedMaKh==maKh)hienThiThe(maKh,k.hoTen);
     }).catch(()=>{});
-    document.getElementById('tbl-lich-su-phong').innerHTML=dsThue.length?dsThue.map(i=>`<tr class="border-b border-red-100"><td class="p-3 text-red-700 font-bold">#${g(i,'MaLuotThue')}</td><td class="p-3 font-bold">${g(i,'SoPhong')}</td><td class="p-3">${g(i,'TenLoaiPhong')}</td><td class="p-3">${g(i,'NgayNhanPhong')}</td><td class="p-3">${g(i,'NgayTraThucTe')||'Chưa trả'}</td><td class="p-3"><span class="px-2 py-0.5 rounded-full text-xs bg-white text-red-700 border border-red-300">${g(i,'TrangThaiDotThue')}</span></td><td class="p-3 text-right text-red-700 font-bold">${money(g(i,'TongTienPhong'))}</td></tr>`).join(''):empty(7,'Chưa có lịch sử thuê phòng');
+    document.getElementById('tbl-lich-su-phong').innerHTML=dsThue.length?dsThue.map(i=>`<tr class="border-b border-red-100"><td class="p-3 text-red-700 font-bold">#${g(i,'MaLuotThue')}</td><td class="p-3 font-bold">${g(i,'SoPhong')}</td><td class="p-3">${g(i,'TenLoaiPhong')}</td><td class="p-3">${g(i,'NgayNhanPhong')}</td><td class="p-3">${g(i,'NgayTraThucTe')||'Chưa trả'}</td><td class="p-3">${badgeTrangThai(g(i,'TrangThaiDotThue'))}</td><td class="p-3 text-right text-red-700 font-bold">${money(g(i,'TongTienPhong'))}</td></tr>`).join(''):empty(7,'Chưa có lịch sử thuê phòng');
     document.getElementById('tbl-lich-su-dv').innerHTML=dsDv.length?dsDv.map(i=>`<tr class="border-b border-red-100"><td class="p-3 text-red-700">#${g(i,'MaLuotThue')}</td><td class="p-3 font-bold">${g(i,'TenDichVu')}</td><td class="p-3 text-gray-600">${g(i,'LoaiDichVu')}</td><td class="p-3">${g(i,'SoLuong')}</td><td class="p-3">${money(g(i,'DonGiaThoiDiem'))}</td><td class="p-3 text-right text-red-700 font-bold">${money(g(i,'ThanhTien'))}</td><td class="p-3">${g(i,'ThoiGianSuDung')}</td></tr>`).join(''):empty(7,'Chưa có lịch sử dịch vụ');
     document.getElementById('tbl-phong-dang-o').innerHTML=dsO.length?dsO.map(i=>`<tr class="border-b border-red-100"><td class="p-2 font-bold text-red-700">${g(i,'SoPhong')}</td><td class="p-2">${g(i,'TenLoaiPhong')}</td><td class="p-2">${g(i,'TuNgay')}</td><td class="p-2 text-red-700">${g(i,'NgayTraDuKien')}</td></tr>`).join(''):empty(4,'Không có phòng đang ở');
     document.getElementById('tbl-dv-dang-dung').innerHTML=dsDang.length?dsDang.map(i=>`<tr class="border-b border-red-100"><td class="p-2 font-bold">${g(i,'TenDichVu')}</td><td class="p-2 text-right">${g(i,'SoLuong')}</td><td class="p-2 text-right text-red-700 font-bold">${money(g(i,'TongTien'))}</td></tr>`).join(''):empty(3,'Không có dịch vụ đang dùng');
   }).catch(e=>{console.error('Lỗi tải hồ sơ khách:',e);['tbl-lich-su-phong','tbl-lich-su-dv','tbl-phong-dang-o','tbl-dv-dang-dung'].forEach((id,i)=>{document.getElementById(id).innerHTML=empty([7,7,4,3][i],'Không tải được dữ liệu')});});
+}
+let dsDatPhong=[], bookingEditingId=null;
+const bookingDate=v=>{
+  if(!v)return '';
+  if(Array.isArray(v)){const d=new Date(v[0],(v[1]||1)-1,v[2]||1,v[3]||0,v[4]||0);return nowInput(d);}
+  return String(v).replace(' ','T').slice(0,16);
+};
+const nowInput=d=>{d=d||new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)};
+const bookingDisplay=v=>bookingDate(v).replace('T',' ');
+async function bookingRequest(url,options){
+  const r=await fetch(url,Object.assign({headers:{'Content-Type':'application/json'}},options||{}));
+  let body={};try{body=await r.json();}catch(e){body={message:`Máy chủ trả lỗi ${r.status}`};}
+  if(!r.ok)throw new Error(body.message||`Máy chủ trả lỗi ${r.status}`);
+  return body;
+}
+function loadBookingData(){
+  Promise.all([getJSON(`${API_URL}/rooms/options`),loadBookings(true)]).then(([rooms])=>{
+    const select=document.getElementById('booking-room');
+    const current=select.value;
+    select.innerHTML=arr(rooms).map(r=>`<option value="${r.maPhong}">${esc(r.soPhong)} - ${esc(r.tenLoaiPhong)} (${money(r.donGia)}/đêm)</option>`).join('');
+    if(current)select.value=current;
+  }).catch(e=>{console.error('Lỗi tải dữ liệu đặt phòng:',e);document.getElementById('booking-table-body').innerHTML=empty(7,'Không tải được dữ liệu đặt phòng');});
+}
+function loadBookings(silent){
+  const filter=document.getElementById('booking-status-filter')?.value||'ALL';
+  const id=document.getElementById('booking-customer-id').value.trim();
+  if(!id&&filter!=='DADAT'){if(!silent)hienLoi('Vui lòng nhập mã khách hàng.');return Promise.reject(new Error('Thiếu mã khách hàng'));}
+  const query=filter==='DADAT'
+    ? `${API_URL}/bookings?trangThai=DADAT`
+    : `${API_URL}/bookings?maKhachHang=${encodeURIComponent(id)}`;
+  return getJSON(query).then(d=>{dsDatPhong=arr(d);renderBookings();return dsDatPhong;}).catch(e=>{if(!silent)hienLoi(e.message);throw e;});
+}
+function updateBookingCustomerPlaceholder(){
+  const type=document.getElementById('booking-customer-search-type').value;
+  const placeholders={id:'Nhập mã khách hàng',name:'Nhập tên khách hàng',cccd:'Nhập số CCCD',phone:'Nhập số điện thoại'};
+  document.getElementById('booking-customer-search').placeholder=placeholders[type]||placeholders.id;
+}
+function searchBookingCustomer(){
+  const type=document.getElementById('booking-customer-search-type').value;
+  const keyword=document.getElementById('booking-customer-search').value.trim();
+  if(!keyword){hienLoi('Vui lòng nhập thông tin khách hàng để tìm.');return;}
+  getJSON(`${API_URL}/search-customer-id?type=${encodeURIComponent(type)}&keyword=${encodeURIComponent(keyword)}`).then(id=>{
+    if(!id||id===-1){hienLoi('Không tìm thấy khách hàng phù hợp.');return;}
+    document.getElementById('booking-customer-id').value=id;
+    hienLoi(`Đã chọn khách hàng #${id}.`,true);
+    loadBookings(true).catch(()=>{});
+  }).catch(e=>hienLoi(`Không thể tìm khách hàng: ${e.message}`));
+}
+function renderBookings(){
+  const body=document.getElementById('booking-table-body');
+  const filter=document.getElementById('booking-status-filter')?.value||'ALL';
+  const list=(filter==='ALL'?dsDatPhong:dsDatPhong.filter(i=>i.trangThaiDotThue===filter)).slice();
+  if(filter==='DADAT')list.sort((a,b)=>String(a.ngayNhanPhong||'').localeCompare(String(b.ngayNhanPhong||'')));
+  body.innerHTML=list.length?list.map(i=>{
+    const active=i.trangThaiDotThue==='DADAT';
+    const statusLabel={DADAT:'Đặt trước',DANGO:'Đã ở',DATRA:'Đã trả',HUY:'Đã hủy'}[i.trangThaiDotThue]||i.trangThaiDotThue;
+    const statusStyle={DADAT:'bg-amber-100 text-amber-800 border-amber-300',DANGO:'bg-red-100 text-red-800 border-red-300',DATRA:'bg-emerald-100 text-emerald-800 border-emerald-300',HUY:'bg-gray-100 text-gray-600 border-gray-300'}[i.trangThaiDotThue]||'bg-gray-100 text-gray-600 border-gray-300';
+    const edit=i.choPhepThayDoi?`<button onclick="startEditBooking(${i.maLuotThue})" class="text-blue-700 font-bold mr-2">Đổi lịch</button>`:'';
+    const cancel=i.choPhepHuy?`<button type="button" title="Hủy lịch đặt phòng" onclick="cancelBooking(${i.maLuotThue})" class="text-red-700 font-bold">Hủy lịch</button>`:'';
+    const notes=[];
+    if(active&&!i.choPhepThayDoi)notes.push('đã quá hạn đổi');
+    if(active&&!i.choPhepHuy)notes.push('chỉ hủy trước 7 ngày');
+    const note=notes.length?` <span class="text-[10px] text-gray-500">(${notes.join('; ')})</span>`:'';
+    const unavailable=i.trangThaiDotThue==='DANGO'?' <span class="text-xs text-gray-500 whitespace-nowrap">Đã ở</span>':i.trangThaiDotThue==='DATRA'?' <span class="text-xs text-gray-500 whitespace-nowrap">Đã trả</span>':i.trangThaiDotThue==='HUY'?' <span class="text-xs text-gray-500 whitespace-nowrap">Đã hủy</span>':'';
+    return `<tr class="border-b border-red-100"><td class="p-3 text-red-700 font-bold">#${i.maLuotThue}</td><td class="p-3 font-bold">${esc(i.soPhong)}<div class="text-xs text-gray-500">${esc(i.tenLoaiPhong)}</div></td><td class="p-3">#${i.maKhachHang} - ${esc(i.tenKhachHang)}</td><td class="p-3">${bookingDisplay(i.ngayNhanPhong)}</td><td class="p-3">${bookingDisplay(i.ngayTraDuKien)}</td><td class="p-3"><span class="px-2 py-0.5 rounded-full text-xs border ${statusStyle}">${esc(statusLabel)}</span>${note}</td><td class="p-3 text-right sticky right-0 bg-white whitespace-nowrap">${edit}${cancel}${unavailable}</td></tr>`;
+  }).join(''):empty(7,filter==='DADAT'?'Khách hàng chưa có phòng đặt trước (DADAT)': 'Không có lịch phù hợp với bộ lọc');
+}
+function startEditBooking(id){
+  const b=dsDatPhong.find(x=>x.maLuotThue==id);if(!b)return;
+  if(!b.choPhepThayDoi){hienLoi('Lịch đặt này đã quá thời hạn thay đổi 7 ngày.');return;}
+  bookingEditingId=id;
+  document.getElementById('booking-customer-id').value=b.maKhachHang;
+  document.getElementById('booking-room').value=b.maPhong;
+  document.getElementById('booking-checkin').value=bookingDate(b.ngayNhanPhong);
+  document.getElementById('booking-checkout').value=bookingDate(b.ngayTraDuKien);
+  document.getElementById('booking-submit').textContent='Lưu đổi lịch';
+  document.getElementById('booking-cancel-edit').classList.remove('hidden');
+  document.getElementById('booking-form').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function resetBookingForm(){
+  bookingEditingId=null;document.getElementById('booking-form').reset();
+  document.getElementById('booking-customer-id').value=currentLoadedMaKh||1;
+  document.getElementById('booking-submit').textContent='Đặt phòng';
+  document.getElementById('booking-cancel-edit').classList.add('hidden');
+}
+async function saveBooking(event){
+  event.preventDefault();
+  const body={maKhachHang:Number(document.getElementById('booking-customer-id').value),maPhong:Number(document.getElementById('booking-room').value),ngayNhanPhong:document.getElementById('booking-checkin').value,ngayTraDuKien:document.getElementById('booking-checkout').value};
+  if(!body.maKhachHang||!body.maPhong||!body.ngayNhanPhong||!body.ngayTraDuKien){hienLoi('Vui lòng nhập đầy đủ thông tin đặt phòng.');return;}
+  try{
+    await bookingRequest(bookingEditingId?`${API_URL}/bookings/${bookingEditingId}`:`${API_URL}/bookings`,{method:bookingEditingId?'PUT':'POST',body:JSON.stringify(body)});
+    hienLoi(bookingEditingId?'Đổi lịch phòng thành công.':'Đặt phòng thành công.',true);
+    resetBookingForm();await loadBookings();
+  }catch(e){
+    const prefix=bookingEditingId?'Không thể đổi lịch':'Không thể đặt phòng';
+    hienLoi(e.message.includes('trùng')||e.message.includes('khách')||e.message.includes('nghiệp vụ')?`${prefix}: ${e.message}`:`${prefix}: ${e.message}`);
+  }
+}
+async function cancelBooking(id){
+  if(!confirm(`Bạn có chắc muốn hủy lượt đặt phòng #${id}?`))return;
+  try{await bookingRequest(`${API_URL}/bookings/${id}`,{method:'DELETE'});hienLoi('Đã hủy lịch đặt phòng.',true);await loadBookings();}
+  catch(e){hienLoi(`Không thể hủy đặt phòng: ${e.message}`);}
 }
 const VIP_COT=['maKhachHang','hoTen','soLanThue','tongThanhToan','loaiPhongUaChuong','dichVuUaChuong'];
 const VIP_TEN=['Mã KH','Họ và tên','Số lần thuê','Tổng chi tiêu','Phòng ưa thích','Dịch vụ ưa thích'];
@@ -1203,26 +1354,70 @@ function renderPhong(){
   const chip=[['','Tất cả',dsPhong.length,'#6b7280'],...Object.keys(MAU_TT).map(k=>[k,k,dem[k]||0,MAU_TT[k][1]])];
   document.getElementById('room-loc').innerHTML=chip.map(([k,n,c,m])=>`<button onclick="locTT='${k}';renderPhong()" class="px-3 py-1 rounded-full border ${locTT===k?'text-white font-bold':'bg-white text-gray-700'}" style="border-color:${m};${locTT===k?'background:'+m:''}"><span class="inline-block w-2 h-2 rounded-full mr-1" style="background:${m}"></span>${n} (${c})</button>`).join('')+`<select onchange="locLoai=this.value;renderPhong()" class="bg-white border border-red-300 text-red-800 rounded-md px-2 py-1"><option value="">Mọi loại phòng</option>${loai.map(l=>`<option ${l===locLoai?'selected':''}>${esc(l)}</option>`).join('')}</select>`;
   const hien=dsPhong.filter(p=>(!locTT||p.trangThai===locTT)&&(!locLoai||p.tenLoaiPhong===locLoai));
-  document.getElementById('room-grid').innerHTML=hien.map(i=>`<div class="p-4 rounded-lg border ${(MAU_TT[i.trangThai]||['bg-white border-red-200 text-red-800'])[0]} flex flex-col justify-between h-28"><div class="flex justify-between items-center"><span class="text-lg font-extrabold text-red-700">${esc(i.soPhong)}</span><span class="text-[10px] px-2 py-0.5 rounded-full bg-white/70 border border-red-300">${esc(i.trangThai)}</span></div><div class="text-xs italic">${esc(i.tenLoaiPhong)}</div></div>`).join('')||'<div class="col-span-full text-center text-gray-400 py-8">Không có phòng phù hợp</div>';
+  document.getElementById('room-grid').innerHTML=hien.map(i=>`<div onclick="showRoomBooking(${Number(i.maPhong)})" title="Bấm để xem thông tin khách" class="cursor-pointer p-4 rounded-lg border ${(MAU_TT[i.trangThai]||['bg-white border-red-200 text-red-800'])[0]} flex flex-col justify-between h-28"><div class="flex justify-between items-center"><span class="text-lg font-extrabold text-red-700">${esc(i.soPhong)}</span><span class="text-[10px] px-2 py-0.5 rounded-full bg-white/70 border border-red-300">${esc(i.trangThai)}</span></div><div class="text-xs italic">${esc(i.tenLoaiPhong)}</div></div>`).join('')||'<div class="col-span-full text-center text-gray-400 py-8">Không có phòng phù hợp</div>';
+}
+function closeRoomBookingModal(){
+  const modal=document.getElementById('room-booking-modal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+}
+function showRoomBooking(maPhong){
+  const room=dsPhong.find(x=>Number(x.maPhong)===Number(maPhong));
+  if(!room)return;
+  const modal=document.getElementById('room-booking-modal');
+  document.getElementById('room-booking-modal-title').textContent=`${room.soPhong} · ${room.trangThai}`;
+  const roomDetails=`<div class="rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm"><div><b>Chất lượng:</b> ${esc(room.moTaChatLuong||'Chưa có mô tả')}</div><div class="mt-1"><b>Thiết kế:</b> ${esc(room.thietKe||'Chưa có mô tả')}</div></div>`;
+  document.getElementById('room-booking-modal-body').innerHTML=roomDetails+'<p class="text-gray-500">Đang tải thông tin khách...</p>';
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  getJSON(`${API_URL}/rooms/${encodeURIComponent(maPhong)}/booking-info`).then(items=>{
+    const list=arr(items);
+    document.getElementById('room-booking-modal-body').innerHTML=roomDetails+(list.length?list.map(i=>{
+      const status=i.trangThaiDotThue==='DANGO'?'Đang sử dụng':'Đặt trước';
+      return `<div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm"><div class="flex justify-between font-bold text-red-800"><span>${esc(status)}</span><span>#${esc(i.maLuotThue)}</span></div><div class="mt-2"><b>Khách hàng:</b> #${esc(i.maKhachHang)} - ${esc(i.hoTen)}</div><div><b>CCCD:</b> ${esc(i.cccd||'Chưa có')} · <b>SĐT:</b> ${esc(i.soDienThoai||'Chưa có')}</div><div class="mt-1"><b>Nhận phòng:</b> ${bookingDisplay(i.ngayNhanPhong)}</div><div><b>Trả dự kiến:</b> ${bookingDisplay(i.ngayTraDuKien)}</div></div>`;
+    }).join(''):'<p class="text-gray-500">Phòng hiện chưa có khách đặt hoặc đang ở.</p>');
+  }).catch(e=>{document.getElementById('room-booking-modal-body').innerHTML=`<p class="text-red-700">Không tải được thông tin khách: ${esc(e.message)}</p>`;});
 }
 function thangLuong(){
   const el=document.getElementById('salary-month');
   if(!el.value)el.value=nowLocal().slice(0,7);
   return el.value;
 }
+function ngayTinhLuong(month){
+  const input=document.getElementById('salary-until');
+  const today=nowLocal().slice(0,10),todayMonth=today.slice(0,7);
+  let value=input.value;
+  if(!value||value.slice(0,7)!==month){
+    if(month===todayMonth)value=today;
+    else if(month<todayMonth){const [y,m]=month.split('-').map(Number);value=`${month}-${String(new Date(y,m,0).getDate()).padStart(2,'0')}`;}
+    else value=`${month}-01`;
+    input.value=value;
+  }
+  return value;
+}
 function loadSalary(){
-  getJSON(`${API_URL}/salary?month=${thangLuong()}`).then(d=>renderSalary(arr(d))).catch(e=>{console.error('Lỗi tải lương:',e);renderSalary([],'Không tải được dữ liệu lương');});
+  const m=thangLuong(),until=ngayTinhLuong(m);
+  getJSON(`${API_URL}/salary?month=${m}&until=${until}`).then(d=>renderSalary(arr(d))).catch(e=>{console.error('Lỗi tải lương:',e);renderSalary([],'Không tải được dữ liệu lương');});
 }
 function searchSalaryById(){
-  const id=document.getElementById('search-emp-id').value.trim(), m=thangLuong();
+  const id=document.getElementById('search-emp-id').value.trim(), m=thangLuong(), until=ngayTinhLuong(m);
   if(!id)return loadSalary();
-  getJSON(`${API_URL}/salary/${encodeURIComponent(id)}?month=${m}`).then(d=>{
+  getJSON(`${API_URL}/salary/${encodeURIComponent(id)}?month=${m}&until=${until}`).then(d=>{
     if(d&&d.maNhanVien)renderSalary([d]);
-    else document.getElementById('salary-table-body').innerHTML=empty(7,`Không tìm thấy nhân viên #${esc(id)}`);
-  }).catch(()=>{document.getElementById('salary-table-body').innerHTML=empty(7,`Không tìm thấy nhân viên #${esc(id)}`);});
+    else document.getElementById('salary-table-body').innerHTML=empty(8,`Không tìm thấy nhân viên #${esc(id)}`);
+  }).catch(()=>{document.getElementById('salary-table-body').innerHTML=empty(8,`Không tìm thấy nhân viên #${esc(id)}`);});
 }
+let salaryRows=[];
+function showEmployeeInfo(id){
+  const i=salaryRows.find(x=>Number(x.maNhanVien)===Number(id));
+  if(!i)return;
+  document.getElementById('employee-info-body').innerHTML=`<div class="rounded-lg bg-red-50 border border-red-200 p-3"><div class="font-bold text-red-800">${esc(i.hoTen||('Nhân viên #'+i.maNhanVien))}</div><div class="text-xs text-gray-600">Mã nhân viên #${esc(i.maNhanVien)}</div></div><div><b>CCCD:</b> ${esc(i.cccd||'Chưa có dữ liệu')}</div><div><b>Số điện thoại:</b> ${esc(i.soDienThoai||'Chưa có dữ liệu')}</div>`;
+  const modal=document.getElementById('employee-info-modal');modal.classList.remove('hidden');modal.classList.add('flex');
+}
+function closeEmployeeInfo(){const modal=document.getElementById('employee-info-modal');modal.classList.add('hidden');modal.classList.remove('flex');}
 function renderSalary(list,thongBao){
-  document.getElementById('salary-table-body').innerHTML=!list.length?empty(7,thongBao||'Không có dữ liệu lương trong tháng này'):list.map(i=>`<tr class="border-b border-red-100"><td class="p-3 text-red-700 font-bold">#${i.maNhanVien}</td><td class="p-3 font-bold">${withAv(i.maKhachHang||i.maNhanVien,i.hoTen)}</td><td class="p-3">${esc(i.chucVu)}</td><td class="p-3">${money(i.luongCoBan)}</td><td class="p-3">${i.soLanNhanTraPhong} lần</td><td class="p-3">${i.soLanHoTro} lần</td><td class="p-3 text-red-700 font-bold">${money(i.tongLuong)}</td></tr>`).join('');
+  salaryRows=list||[];
+  document.getElementById('salary-table-body').innerHTML=!salaryRows.length?empty(8,thongBao||'Không có dữ liệu lương trong tháng này'):salaryRows.map(i=>`<tr class="border-b border-red-100"><td class="p-3 text-red-700 font-bold">#${i.maNhanVien}</td><td class="p-3 font-bold"><button type="button" onclick="showEmployeeInfo(${Number(i.maNhanVien)})" class="text-left text-blue-700 hover:underline">${withAv(i.maKhachHang||i.maNhanVien,i.hoTen)}</button></td><td class="p-3">${esc(i.chucVu)}</td><td class="p-3">${money(i.luongCoBan)}</td><td class="p-3">${i.soLanNhanTraPhong} lần</td><td class="p-3">${i.soLanHoTro} lần</td><td class="p-3 text-amber-700 font-bold">${moneyNghin(i.tamTinh)}</td><td class="p-3 text-red-700 font-bold">${money(i.tongLuong)}</td></tr>`).join('');
 }
 function loadRevenue(){
   const pad=v=>String(v).padStart(2,'0');
@@ -1350,6 +1545,7 @@ const IC={
  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
  crown:'<path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 11H5z"/><path d="M5 21h14"/>',
  bed:'<path d="M3 18V6"/><path d="M3 12h16a2 2 0 0 1 2 2v4"/><path d="M3 18h18"/><circle cx="7.5" cy="9" r="1.8"/>',
+ calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>',
  briefcase:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><path d="M3 13h18"/>',
  trend:'<path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
  bars:'<path d="M5 20V11"/><path d="M12 20V4"/><path d="M19 20v-6"/>',
@@ -1358,7 +1554,8 @@ const IC={
 const ico=n=>`<svg class="hm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
 const MENU=[
  {id:'customer-lookup',ten:'Tra cứu khách hàng',mt:'Hồ sơ, lịch sử thuê phòng và dịch vụ',ic:'search'},
- {id:'vip',ten:'Khách VIP',mt:'Khách thân thiết chi tiêu trên 20 triệu',ic:'crown'},
+  {id:'bookings',ten:'Đặt phòng',mt:'Đặt, đổi lịch và hủy phòng',ic:'calendar'},
+ {id:'vip',ten:'Khách hàng thân thiết',mt:'Khách thân thiết chi tiêu trên 20 triệu',ic:'crown'},
  {id:'room-status',ten:'Sơ đồ phòng',mt:'Tình trạng từng phòng theo thời điểm',ic:'bed'},
  {id:'salary',ten:'Lương nhân viên',mt:'Bảng lương theo tháng',ic:'briefcase'},
  {id:'revenue',ten:'Doanh thu',mt:'Theo tháng, loại phòng, loại dịch vụ',ic:'trend'},
@@ -1380,7 +1577,7 @@ drawer.innerHTML=
  `<div class="hm-dh">${logoSrc?`<img src="${logoSrc}" alt="Logo PTIT">`:''}<div><b>Quản Lý Khách Sạn</b><small>Giám đốc Mr Khang</small></div></div>`+
  `<div class="hm-lab">Điều hướng</div>`+
  `<button type="button" class="hm-item" data-go="home" style="--i:0"><span class="hm-ib">${ico('home')}</span><span><b>Trang chủ</b><small>Tổng quan hoạt động khách sạn</small></span></button>`+
- `<div class="hm-lab">Yêu cầu truy vấn</div>`+
+ `<div class="hm-lab">Tính Năng</div>`+
  MENU.map((m,i)=>`<button type="button" class="hm-item" data-go="${m.id}" style="--i:${i+1}"><span class="hm-ib">${ico(m.ic)}</span><span><b>${m.ten}</b><small>${m.mt}</small></span></button>`).join('')+
  `<div class="hm-df">Nhấn Esc hoặc chạm ra ngoài để đóng menu</div>`;
 function moMenu(){drawer.classList.add('open');overlay.classList.add('open');burger.classList.add('open');burger.setAttribute('aria-expanded','true');burger.setAttribute('aria-label','Đóng menu truy vấn');setTimeout(()=>{const f=drawer.querySelector('.hm-item.on')||drawer.querySelector('.hm-item');if(f)f.focus({preventScroll:true})},60)}

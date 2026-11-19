@@ -23,10 +23,15 @@ public interface HotelReportRepository extends JpaRepository<KhachHang, Integer>
     List<Integer> findCustomerIdByCriteria(@Param("type") String type, @Param("keyword") String keyword);
 
     @Query(value = """
-        SELECT p.SoPhong AS soPhong, lp.TenLoaiPhong AS tenLoaiPhong,
+        SELECT p.MaPhong AS maPhong, p.SoPhong AS soPhong, lp.TenLoaiPhong AS tenLoaiPhong,
+               lp.MoTaChatLuong AS moTaChatLuong, lp.ThietKe AS thietKe,
                CASE
-                 WHEN EXISTS (SELECT 1 FROM ThuePhong t WHERE t.MaPhong = p.MaPhong AND t.TrangThaiDotThue IN ('DANGO', 'DATRA') AND t.NgayNhanPhong <= :thoiDiem AND :thoiDiem < COALESCE(t.NgayTraThucTe, t.NgayTraDuKien)) THEN 'Đang sử dụng'
-                 WHEN EXISTS (SELECT 1 FROM ThuePhong t WHERE t.MaPhong = p.MaPhong AND t.TrangThaiDotThue = 'DADAT' AND t.NgayNhanPhong > :thoiDiem AND :thoiDiem < t.NgayTraDuKien) THEN 'Đã đặt trước'
+                 WHEN EXISTS (SELECT 1 FROM ThuePhong t
+                              WHERE t.MaPhong = p.MaPhong
+                                AND t.TrangThaiDotThue = 'DANGO') THEN 'Đang sử dụng'
+                 WHEN EXISTS (SELECT 1 FROM ThuePhong t
+                              WHERE t.MaPhong = p.MaPhong
+                                AND t.TrangThaiDotThue = 'DADAT') THEN 'Đã đặt trước'
                  ELSE 'Đang trống'
                END AS trangThai
         FROM Phong p JOIN LoaiPhong lp ON lp.MaLoaiPhong = p.MaLoaiPhong ORDER BY p.SoPhong
@@ -131,23 +136,35 @@ public interface HotelReportRepository extends JpaRepository<KhachHang, Integer>
     List<VIPCustomerDTO> getVIPCustomers();
 
     @Query(value = """
-        SELECT nv.MaNhanVien AS maNhanVien, nv.HoTen AS hoTen, nv.ChucVu AS chucVu, nv.LuongCoBan AS luongCoBan,
+        SELECT nv.MaNhanVien AS maNhanVien, nv.HoTen AS hoTen, nv.CCCD AS cccd, nv.SoDienThoai AS soDienThoai, nv.ChucVu AS chucVu, nv.LuongCoBan AS luongCoBan,
                COUNT(CASE WHEN pv.LoaiCongViec IN ('CHECKIN', 'CHECKOUT') THEN 1 END) AS soLanNhanTraPhong,
                COUNT(CASE WHEN pv.LoaiCongViec = 'HO_TRO' THEN 1 END) AS soLanHoTro,
+               CASE
+                 WHEN STR_TO_DATE(:denNgay, '%Y-%m-%d') < STR_TO_DATE(CONCAT(:thang, '-01'), '%Y-%m-%d') THEN 0
+                 ELSE nv.LuongCoBan * DAY(STR_TO_DATE(:denNgay, '%Y-%m-%d')) / DAY(LAST_DAY(STR_TO_DATE(CONCAT(:thang, '-01'), '%Y-%m-%d')))
+                      + 100000 * COUNT(CASE WHEN pv.LoaiCongViec IN ('CHECKIN', 'CHECKOUT') AND pv.ThoiGianThucHien < DATE_ADD(STR_TO_DATE(:denNgay, '%Y-%m-%d'), INTERVAL 1 DAY) THEN 1 END)
+                      + 200000 * COUNT(CASE WHEN pv.LoaiCongViec = 'HO_TRO' AND pv.ThoiGianThucHien < DATE_ADD(STR_TO_DATE(:denNgay, '%Y-%m-%d'), INTERVAL 1 DAY) THEN 1 END)
+               END AS tamTinh,
                CASE WHEN :thang < DATE_FORMAT(CURDATE(), '%Y-%m') THEN nv.LuongCoBan + 100000 * COUNT(CASE WHEN pv.LoaiCongViec IN ('CHECKIN', 'CHECKOUT') THEN 1 END) + 200000 * COUNT(CASE WHEN pv.LoaiCongViec = 'HO_TRO' THEN 1 END) ELSE 0 END AS tongLuong
         FROM NhanVien nv LEFT JOIN NhanVienPhucVu pv ON pv.MaNhanVien = nv.MaNhanVien AND DATE_FORMAT(pv.ThoiGianThucHien, '%Y-%m') = :thang
         GROUP BY nv.MaNhanVien, nv.HoTen, nv.ChucVu, nv.LuongCoBan ORDER BY tongLuong DESC
     """, nativeQuery = true)
-    List<MonthlySalaryDTO> calculateMonthlySalary(@Param("thang") String thang);
+    List<MonthlySalaryDTO> calculateMonthlySalary(@Param("thang") String thang, @Param("denNgay") String denNgay);
 
     @Query(value = """
-        SELECT nv.MaNhanVien AS maNhanVien, nv.HoTen AS hoTen, nv.ChucVu AS chucVu, nv.LuongCoBan AS luongCoBan,
+        SELECT nv.MaNhanVien AS maNhanVien, nv.HoTen AS hoTen, nv.CCCD AS cccd, nv.SoDienThoai AS soDienThoai, nv.ChucVu AS chucVu, nv.LuongCoBan AS luongCoBan,
                COUNT(CASE WHEN pv.LoaiCongViec IN ('CHECKIN', 'CHECKOUT') THEN 1 END) AS soLanNhanTraPhong,
                COUNT(CASE WHEN pv.LoaiCongViec = 'HO_TRO' THEN 1 END) AS soLanHoTro,
+               CASE
+                 WHEN STR_TO_DATE(:denNgay, '%Y-%m-%d') < STR_TO_DATE(CONCAT(:thang, '-01'), '%Y-%m-%d') THEN 0
+                 ELSE nv.LuongCoBan * DAY(STR_TO_DATE(:denNgay, '%Y-%m-%d')) / DAY(LAST_DAY(STR_TO_DATE(CONCAT(:thang, '-01'), '%Y-%m-%d')))
+                      + 100000 * COUNT(CASE WHEN pv.LoaiCongViec IN ('CHECKIN', 'CHECKOUT') AND pv.ThoiGianThucHien < DATE_ADD(STR_TO_DATE(:denNgay, '%Y-%m-%d'), INTERVAL 1 DAY) THEN 1 END)
+                      + 200000 * COUNT(CASE WHEN pv.LoaiCongViec = 'HO_TRO' AND pv.ThoiGianThucHien < DATE_ADD(STR_TO_DATE(:denNgay, '%Y-%m-%d'), INTERVAL 1 DAY) THEN 1 END)
+               END AS tamTinh,
                CASE WHEN :thang < DATE_FORMAT(CURDATE(), '%Y-%m') THEN nv.LuongCoBan + 100000 * COUNT(CASE WHEN pv.LoaiCongViec IN ('CHECKIN', 'CHECKOUT') THEN 1 END) + 200000 * COUNT(CASE WHEN pv.LoaiCongViec = 'HO_TRO' THEN 1 END) ELSE 0 END AS tongLuong
         FROM NhanVien nv LEFT JOIN NhanVienPhucVu pv ON pv.MaNhanVien = nv.MaNhanVien AND DATE_FORMAT(pv.ThoiGianThucHien, '%Y-%m') = :thang
         WHERE nv.MaNhanVien = :maNv
         GROUP BY nv.MaNhanVien, nv.HoTen, nv.ChucVu, nv.LuongCoBan
     """, nativeQuery = true)
-    MonthlySalaryDTO getEmployeeSalaryById(@Param("maNv") Integer maNv, @Param("thang") String thang);
+    MonthlySalaryDTO getEmployeeSalaryById(@Param("maNv") Integer maNv, @Param("thang") String thang, @Param("denNgay") String denNgay);
 }

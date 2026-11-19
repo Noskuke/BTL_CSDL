@@ -27,6 +27,8 @@ CREATE TABLE LoaiPhong (
     TenLoaiPhong VARCHAR(50) NOT NULL,
     SoLuong      INT NOT NULL,
     DonGia       DECIMAL(12,2) NOT NULL,
+    MoTaChatLuong VARCHAR(255),
+    ThietKe      VARCHAR(255),
     CONSTRAINT chk_soluong_phong CHECK (SoLuong > 0),
     CONSTRAINT chk_dongia_phong CHECK (DonGia > 0)
 );
@@ -104,15 +106,11 @@ BEGIN
             SELECT 1 FROM ThuePhong t
             WHERE t.MaPhong = p.MaPhong
               AND t.TrangThaiDotThue = 'DANGO'
-              AND t.NgayNhanPhong <= NOW()
-              AND NOW() < COALESCE(t.NgayTraThucTe, t.NgayTraDuKien)
         ) THEN 'DANGSUDUNG'
         WHEN EXISTS (
             SELECT 1 FROM ThuePhong t
             WHERE t.MaPhong = p.MaPhong
               AND t.TrangThaiDotThue = 'DADAT'
-              AND t.NgayNhanPhong > NOW()
-              AND t.NgayTraDuKien > NOW()
         ) THEN 'DATTRUOC'
         ELSE 'TRONG'
     END
@@ -132,7 +130,7 @@ BEGIN
           AND NEW.NgayTraDuKien > t.NgayNhanPhong
     ) THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Lỗi nghiệp vụ: Phòng đã có khách đặt/ở trong khoảng thời gian này!';
+        SET MESSAGE_TEXT = 'BOOKING_OVERLAP';
     END IF;
 END$$
 
@@ -141,6 +139,24 @@ CREATE TRIGGER trg_CheckOverlappingBookingUpdate
 BEFORE UPDATE ON ThuePhong
 FOR EACH ROW
 BEGIN
+    -- Chỉ được đổi thời gian/phòng hoặc hủy khi còn ít nhất 7 ngày trước ngày nhận.
+    IF OLD.TrangThaiDotThue = 'DADAT'
+       AND NEW.TrangThaiDotThue = 'HUY'
+       AND NOW() > DATE_SUB(OLD.NgayNhanPhong, INTERVAL 7 DAY) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'BOOKING_CANCEL_WINDOW_7_DAYS';
+    END IF;
+
+    IF OLD.TrangThaiDotThue = 'DADAT'
+       AND NEW.TrangThaiDotThue = 'DADAT'
+       AND (OLD.MaPhong <> NEW.MaPhong
+            OR OLD.NgayNhanPhong <> NEW.NgayNhanPhong
+            OR OLD.NgayTraDuKien <> NEW.NgayTraDuKien)
+       AND NOW() > DATE_SUB(OLD.NgayNhanPhong, INTERVAL 7 DAY) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'BOOKING_CHANGE_WINDOW_7_DAYS';
+    END IF;
+
     IF NEW.TrangThaiDotThue IN ('DADAT', 'DANGO') AND EXISTS (
         SELECT 1 FROM ThuePhong t
         WHERE t.MaPhong = NEW.MaPhong
@@ -150,7 +166,7 @@ BEGIN
           AND NEW.NgayTraDuKien > t.NgayNhanPhong
     ) THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Lỗi nghiệp vụ: Phòng đã có khách đặt/ở trong khoảng thời gian này!';
+        SET MESSAGE_TEXT = 'BOOKING_OVERLAP';
     END IF;
 END$$
 
